@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>VueFire Todo App Demo</title>
+    <script src="https://www.gstatic.com/firebasejs/4.0.0/firebase.js"></script>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="vuefire.js"></script>
+    <script src="setting.js"></script>
+  </head>
+  <body>
+    <h1>TODOS</h1>
+    <div id="app">
+      <input
+        v-model.trim="newTodoText"
+        @keyup.enter="addTodo"
+        placeholder="今日やること"
+      >
+      <hr>
+      <ul>
+        <li v-for="todo in todos">
+          <input
+            :value="todo.text"
+            @input="updateTodoText(todo, $event.target.value)"
+          >
+          <button @click="removeTodo(todo)">X</button>
+        </li>
+      </ul>
+    </div>
+
+    <script>
+      /* global Vue, firebase */
+      var db = firebase.initializeApp({
+        apiKey: "AIzaSyD5RcU7VwEvqECHxmb_0HFoSn9hIsOuij4",
+        authDomain: "smooth-league-163213.firebaseapp.com",
+        databaseURL: "https://smooth-league-163213.firebaseio.com",
+        projectId: "smooth-league-163213",
+        storageBucket: "smooth-league-163213.appspot.com",
+        messagingSenderId: "531135323724"
+      }).database()
+      var todosRef = db.ref('todos')
+
+      new Vue({
+        el: '#app',
+        data: {
+          newTodoText: ''
+        },
+        firebase: {
+          todos: todosRef.limitToLast(25)
+        },
+        methods: {
+          addTodo: function () {
+            if (this.newTodoText) {
+              todosRef.push({
+                text: this.newTodoText
+              })
+              this.newTodoText = ''
+            }
+          },
+          updateTodoText: function (todo, newText) {
+            todosRef.child(todo['.key']).child('text').set(newText)
+          },
+          removeTodo: function (todo) {
+            todosRef.child(todo['.key']).remove()
+          }
+        }
+      })
+    </script>
+  </body>
+</html>

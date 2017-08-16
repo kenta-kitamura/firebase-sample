@@ -1,0 +1,12 @@
+# firebase
+firebase-debug.log
+
+# Node
+node_modules/
+
+# Redis
+*.rdb
+
+# Vim
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
